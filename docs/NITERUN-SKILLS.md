@@ -35,6 +35,18 @@ npx --yes skills@1.7.4 list --global
 npx --yes skills@1.7.4 check
 ```
 
+On Windows with Node 24 or later, use the verified, isolated Node 22
+runner for reliable discovery (the system Node installation is not changed):
+
+```powershell
+.\scripts\niterun-skill-cli.ps1 find "typescript testing"
+```
+
+The Windows bootstrap downloads the official Node.js 22.23.4 binary into
+`%LOCALAPPDATA%\NITERUN\runtimes\` only if needed and checks its SHA-256
+against the official release. The cloned CLI must be built before running
+this wrapper; `npx` is still used for the initial bootstrap installation.
+
 Search **does not** install third-party skills. For every additional skill,
 review `SKILL.md`, scripts, data/network access, provenance, license, and
 permissions before installing. Do not enable unattended skill installation
