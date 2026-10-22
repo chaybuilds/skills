@@ -13,10 +13,16 @@ $agents = @('claude-code', 'codex', 'opencode', 'openhands')
 $cliArgs = @('--yes', $cli, 'add', $source, '--skill', 'find-skills', '--global')
 foreach ($agent in $agents) { $cliArgs += @('--agent', $agent) }
 $cliArgs += '--yes'
-& npx @cliArgs
-if ($LASTEXITCODE -ne 0) { throw 'NITERUN skill installation failed.' }
-& npx --yes $cli list --global
-if ($LASTEXITCODE -ne 0) { throw 'NITERUN skill verification failed.' }
+# Run outside this repo: npm may otherwise resolve its unbuilt local 'skills' package.
+Push-Location $HOME
+try {
+  & npx @cliArgs
+  if ($LASTEXITCODE -ne 0) { throw 'NITERUN skill installation failed.' }
+  & npx --yes $cli list --global
+  if ($LASTEXITCODE -ne 0) { throw 'NITERUN skill verification failed.' }
+} finally {
+  Pop-Location
+}
 $entry = Join-Path $HOME '.agents\skills\find-skills\SKILL.md'
 if (-not (Test-Path $entry)) { throw "Skill entrypoint missing: $entry" }
 Write-Output "NITERUN find-skills ready: $entry"
